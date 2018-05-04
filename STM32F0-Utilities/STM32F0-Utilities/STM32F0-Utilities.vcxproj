@@ -39,6 +39,7 @@
     <ClCompile Include="src\STM32F0_OTHER.c" />
     <ClCompile Include="src\STM32F0_TIM.c" />
     <ClCompile Include="src\STM32F0_UCTDEV.c" />
+    <ClCompile Include="src\__TEMPLATE.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
