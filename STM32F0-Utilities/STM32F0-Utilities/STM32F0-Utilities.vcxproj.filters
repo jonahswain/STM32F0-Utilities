@@ -14,4 +14,62 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\STM32F0_ADC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\STM32F0_GPIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\STM32F0_I2C.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\STM32F0_INTERRUPTS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\STM32F0_LCD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\STM32F0_OTHER.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\STM32F0_TIM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\STM32F0_UCTDEV.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\STM32F0_UTIL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stm32f0xx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\STM32F0_ADC.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\STM32F0_GPIO.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\STM32F0_I2C.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\STM32F0_INTERRUPTS.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\STM32F0_LCD.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\STM32F0_OTHER.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\STM32F0_TIM.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\STM32F0_UCTDEV.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>

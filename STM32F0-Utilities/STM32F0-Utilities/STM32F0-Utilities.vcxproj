@@ -18,6 +18,28 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\stm32f0xx.h" />
+    <ClInclude Include="include\STM32F0_ADC.h" />
+    <ClInclude Include="include\STM32F0_GPIO.h" />
+    <ClInclude Include="include\STM32F0_I2C.h" />
+    <ClInclude Include="include\STM32F0_INTERRUPTS.h" />
+    <ClInclude Include="include\STM32F0_LCD.h" />
+    <ClInclude Include="include\STM32F0_OTHER.h" />
+    <ClInclude Include="include\STM32F0_TIM.h" />
+    <ClInclude Include="include\STM32F0_UCTDEV.h" />
+    <ClInclude Include="include\STM32F0_UTIL.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\STM32F0_ADC.c" />
+    <ClCompile Include="src\STM32F0_GPIO.c" />
+    <ClCompile Include="src\STM32F0_I2C.c" />
+    <ClCompile Include="src\STM32F0_INTERRUPTS.c" />
+    <ClCompile Include="src\STM32F0_LCD.c" />
+    <ClCompile Include="src\STM32F0_OTHER.c" />
+    <ClCompile Include="src\STM32F0_TIM.c" />
+    <ClCompile Include="src\STM32F0_UCTDEV.c" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{BBC63BF2-CFA2-4CEC-B47F-C18E02807AF7}</ProjectGuid>
@@ -114,8 +136,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
