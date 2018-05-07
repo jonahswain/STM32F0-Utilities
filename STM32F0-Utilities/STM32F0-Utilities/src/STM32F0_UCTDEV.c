@@ -76,7 +76,7 @@ void init_tempSensor() {
 
 void ledWrite(uint8_t pattern) {
 	// Displays a pattern on the red LEDs on the board
-	GPIOB->ODR &= 0xFFFF & pattern; // Turn off the LEDs that need to be turned off
+	GPIOB->ODR &= (0xFF00 | (0xFF & pattern)); // Turn off the LEDs that need to be turned off
 	GPIOB->ODR |= pattern; // Turn on the LEDs that need to be turned on
 }
 
