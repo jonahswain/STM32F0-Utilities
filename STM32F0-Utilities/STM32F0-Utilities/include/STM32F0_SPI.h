@@ -73,7 +73,7 @@ crcMode - Hardware CRC calculation enable/configuration
 rxThreshold - 0: RXNE on 16 bits received 1: RXNE on 8 bits received
 */
 
-void spiTransmitFrame(uint16_t data); // Transmits a frame of data over SPI
-void spiTransmit(int* data); // Transmits a series of frames over SPI (until the null terminator -1 is reached)
+void spiTransmitFrame(SPI_TypeDef* SPIperiph, uint16_t data); // Transmits a frame of data over SPI
+void spiTransmit(SPI_TypeDef* SPIperiph, int* data); // Transmits a series of frames over SPI (until the null terminator -1 is reached)
 uint16_t spiReceiveFrame(); // Gets a received from SPI
 // TODO add a suitable receive data method
