@@ -44,5 +44,5 @@ Functions to use the analog to digital converter
 /* FUNCTIONS */
 
 void init_ADC(int resolution); // Initialise and calibrate the ADC
-int analogRead(IOPin_TypeDef* iopin); // Read an analog value from a pin
-int analogReadChannel(int channel); // Read an analog value from a specific ADC channel
+uint16_t analogRead(IOPin_TypeDef* iopin); // Read an analog value from a pin
+uint16_t analogReadChannel(int channel); // Read an analog value from a specific ADC channel
