@@ -23,10 +23,10 @@ Module: ADC
 void init_ADC(int resolution) {
 	// Initialise and calibrate the ADC
 	RCC->APB2ENR |= RCC_APB2ENR_ADCEN; // Enable clock for the ADC
-	ADC1->CR |= (1 << 31); // Start ADC calibration
-	while ((ADC1->CR & (1 << 31)) != 0); // Wait for calibration to complete
-	ADC1->CR |= 1; // Enable the ADC
-	while ((ADC1->ISR & 1) == 0); // Wait for ADC to be ready
+	ADC1->CR |= ADC_CR_ADCAL; // Start ADC calibration
+	while ((ADC1->CR & ADC_CR_ADCAL); // Wait for calibration to complete
+	ADC1->CR |= ADC_CR_ADEN; // Enable the ADC
+	while (!(ADC1->ISR & ADC_ISR_ADRDY)); // Wait for ADC to be ready
 	if ((resolution >= 0) && (resolution <= 3)) {
 		// Check if resolution is valid
 		ADC1->CFGR1 |= (resolution << 3); // Set the ADC resolution
