@@ -5,7 +5,7 @@ A Collection of utilities for STM32F0 microcontrollers, primarily targeted at th
 
 Author: Jonah Swain (SWNJON003)
 Date created: 04/05/2018
-Date modified: 04/05/2018
+Date modified: 21/05/2018
 
 Module: SPI
 Functions for using the Serial Peripheral Interface peripheral module
@@ -35,8 +35,11 @@ Functions for using the Serial Peripheral Interface peripheral module
 #endif
 
 /* CONSTANT DEFINITIONS */
-// Common BAUD rates
-
+// Common BAUD rates (Assuming eclipse default 48MHz fpclk)
+#define SPI_BAUD_6MHZ 0x2 // fpclk/8
+#define SPI_BAUD_3MHZ 0x3 // fpclk/16
+#define SPI_BAUD_750KHZ 0x5 // fpclk/64
+#define SPI_BAUD_187KHZ 0x7 // fpclk/256
 
 #define SPI_MASTER_MODE 1
 #define SPI_SLAVE_MODE 0
@@ -46,19 +49,22 @@ Functions for using the Serial Peripheral Interface peripheral module
 #define SPI_FRAMESIZE_16BIT 0xF
 
 // Common data transfer modes
-// TODO
+#define SPI_BIDIMODE 0x4
+#define SPI_BIDIOE 0x2
+#define SPI_RXONLY 0x1
 
 #define SPI_MULTIMASTER_ENABLE 0
 #define SPI_MULTIMASTER_DISABLE 1
 
 // Common hardware CRC configurations
-// TODO
+#define SPI_CRCEN 0x1
+#define SPI_CRCL 0x2
 
 #define SPI_RXNE_8BIT 1
 #define SPI_RXNE_16BIT 0
 
 /* FUNCTIONS */
-void init_SPI(SPI_TypeDef* SPIperiph, int BAUD, int masterMode, int frameFormat, int dataSize, int dataTransferMode, int multiMasterMode, int clockPolarity, int clockPhase, int crcMode, int rxThreshold); // Initialises and configures an SPI peripheral module
+void init_SPI(SPI_TypeDef* SPIperiph, uint8_t BAUD, int masterMode, int frameFormat, uint8_t dataSize, int dataTransferMode, int multiMasterMode, int clockPolarity, int clockPhase, int crcMode, int rxThreshold); // Initialises and configures an SPI peripheral module
 /*
 SPIperiph - the SPI interface to initialise and configure
 BAUD - the fpclk scaler to use for the BAUD rate (pg 754 of reference manual)
@@ -74,6 +80,5 @@ rxThreshold - 0: RXNE on 16 bits received 1: RXNE on 8 bits received
 */
 
 void spiTransmitFrame(SPI_TypeDef* SPIperiph, uint16_t data); // Transmits a frame of data over SPI
-void spiTransmit(SPI_TypeDef* SPIperiph, int* data); // Transmits a series of frames over SPI (until the null terminator -1 is reached)
-uint16_t spiReceiveFrame(); // Gets a received from SPI
+uint16_t spiReceiveFrame(SPI_TypeDef* SPIperiph); // Gets a frame of data received over SPI
 // TODO add a suitable receive data method
