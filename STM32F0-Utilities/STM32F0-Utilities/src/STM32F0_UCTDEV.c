@@ -171,4 +171,5 @@ uint8_t eepromRead(uint16_t address) {
 
 	digitalWrite(EEPROM_CS, HIGH); // Set chip select high
 	__cpuHoldDelay(5000); // Wait for instruction to complete
+	return data;
 }
