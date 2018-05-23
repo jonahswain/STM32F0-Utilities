@@ -4,7 +4,7 @@ A Collection of utilities for STM32F0 microcontrollers, primarily targeted at th
 
 Author: Jonah Swain (SWNJON003)
 Date created: 04/05/2018
-Date modified: 21/05/2018
+Date modified: 23/05/2018
 
 Module: SPI
 Functions for using the Serial Peripheral Interface peripheral module
@@ -35,9 +35,17 @@ void init_SPI(SPI_TypeDef* SPIperiph, uint8_t BAUD, int masterMode, int frameFor
 	while (SPIperiph->SR & SPI_SR_FTLVL); // Wait for any ongoing transmissions to complete
 	while (SPIperiph->SR & SPI_SR_BSY); // Wait until the last data frame is processed
 	SPIperiph->CR1 &= SPI_CR1_SPE; // Disable the peripheral
-	uint16_t dummyData; // A dummy data variable to store pending receive data in
-	while (SPIperiph->SR & SPI_SR_FRLVL) {
-		dummyData = SPIperiph->DR; // Read in any data from pending receptions
+	// Clears any junk out of the SPI RX FIFO buffers
+	uint16_t dummyData; // A variable to temporarily store data
+	while (SPIperiph->SR & SPI_SR_FRLVL) { // Run until buffer is empty
+		if (SPIperiph->CR2 & SPI_CR2_FRXTH) {
+			// 8-bit access mode
+			dummyData = *((uint8_t*)(&SPIperiph->DR));
+		}
+		else {
+			// 16-bit access mode
+			dummyData = SPIperiph->DR;
+		}
 	}
 
 	// BAUD rate
@@ -138,5 +146,97 @@ void init_SPI(SPI_TypeDef* SPIperiph, uint8_t BAUD, int masterMode, int frameFor
 
 }
 
-void spiTransmitFrame(SPI_TypeDef* SPIperiph, uint16_t data); // Transmits a frame of data over SPI
-uint16_t spiReceiveFrame(SPI_TypeDef* SPIperiph); // Gets a frame of data received over SPI
+void __spiFlushRXBuffer(SPI_TypeDef* SPIperiph) {
+	// Clears any junk out of the SPI RX FIFO buffers
+	uint16_t dummyData; // A variable to temporarily store data
+	while (SPIperiph->SR & SPI_SR_FRLVL) { // Run until buffer is empty
+		if (SPIperiph->CR2 & SPI_CR2_FRXTH) {
+			// 8-bit access mode
+			dummyData = *((uint8_t*)(&SPIperiph->DR));
+		}
+		else {
+			// 16-bit access mode
+			dummyData = SPIperiph->DR;
+		}
+	}
+}
+
+void spiTransmitFrame(SPI_TypeDef* SPIperiph, uint16_t data) {
+	// Transmits a frame of data over SPI
+	uint8_t dataSize = ((SPIperiph->CR1 >> 8) & 0x0F); // Retrieve the data size bits
+
+	while ((SPIperiph->SR & SPI_SR_FTLVL) == 0x1800); // Wait for TX buffer to not be full
+
+	// SPI peripheral module data register is an interface to the TX and RX FIFO buffers, so access must correspond to the data size
+	if (dataSize > 7) {
+		// 2-byte frame size
+		SPIperiph->DR = data; // Place the data in the data register
+	}
+	else {
+		// 1-byte frame size
+		*((uint8_t*)(&SPIperiph->DR)) = (uint8_t)data; // Place the data in the data register
+	}
+	
+}
+
+
+// TODO NB: Re-write for DR access requirements
+uint16_t spiReceiveFrame(SPI_TypeDef* SPIperiph) {
+	// Gets a frame of data received over SPI
+	uint8_t dataSize = ((SPIperiph->CR1 >> 8) & 0x0F); // Retrieve the data size bits
+
+	// Clears any junk out of the SPI RX FIFO buffers
+	uint16_t dummyData; // A variable to temporarily store data
+	while (SPIperiph->SR & SPI_SR_FRLVL) { // Run until buffer is empty
+		if (SPIperiph->CR2 & SPI_CR2_FRXTH) {
+			// 8-bit access mode
+			dummyData = *((uint8_t*)(&SPIperiph->DR));
+		}
+		else {
+			// 16-bit access mode
+			dummyData = SPIperiph->DR;
+		}
+	}
+
+	// Send a frame of arbitrary data to allow the slave to clock out data
+	if (dataSize > 7) {
+		// 2-byte frame size
+		SPIperiph->DR = 0x6969; // Place the data in the data register
+	}
+	else {
+		// 1-byte frame size
+		*((uint8_t*)(&SPIperiph->DR)) = (uint8_t)0x69; // Place the data in the data register
+	}
+	
+	unsigned int timeout = SPI_TIMEOUT_LONG;
+	while (!(SPIperiph->SR & SPI_SR_RXNE)) {
+		// Wait for data to arrive in the RX buffer
+		if (timeout == 0) {
+			return 0;
+		}
+		timeout--;
+	}
+
+	// Return the received data
+	if (SPIperiph->CR2 & SPI_CR2_FRXTH) {
+		// 8-bit access mode
+		return ((uint16_t) *((uint8_t*)&SPIperiph->DR));
+	}
+	else {
+		// 16-bit access mode
+		return ((uint16_t) SPIperiph->DR);
+	}
+
+}
+
+uint16_t spiGetData(SPI_TypeDef* SPIperiph) {
+	// Gets the last received data frame
+	if (SPIperiph->CR2 & SPI_CR2_FRXTH) {
+		// 8-bit access mode
+		return ((uint16_t) *((uint8_t*)&SPIperiph->DR));
+	}
+	else {
+		// 16-bit access mode
+		return ((uint16_t)SPIperiph->DR);
+	}
+}

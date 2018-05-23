@@ -5,7 +5,7 @@ A Collection of utilities for STM32F0 microcontrollers, primarily targeted at th
 
 Author: Jonah Swain (SWNJON003)
 Date created: 04/05/2018
-Date modified: 21/05/2018
+Date modified: 23/05/2018
 
 Module: SPI
 Functions for using the Serial Peripheral Interface peripheral module
@@ -35,6 +35,9 @@ Functions for using the Serial Peripheral Interface peripheral module
 #endif
 
 /* CONSTANT DEFINITIONS */
+
+#define SPI_TIMEOUT_LONG 50000 // Timeout waiting for data
+
 // Common BAUD rates (Assuming eclipse default 48MHz fpclk)
 #define SPI_BAUD_6MHZ 0x2 // fpclk/8
 #define SPI_BAUD_3MHZ 0x3 // fpclk/16
@@ -79,6 +82,8 @@ crcMode - Hardware CRC calculation enable/configuration
 rxThreshold - 0: RXNE on 16 bits received 1: RXNE on 8 bits received
 */
 
+void __spiFlushRXBuffer(SPI_TypeDef* SPIperiph); // Clears any junk out of the SPI RX FIFO buffers
+
 void spiTransmitFrame(SPI_TypeDef* SPIperiph, uint16_t data); // Transmits a frame of data over SPI
-uint16_t spiReceiveFrame(SPI_TypeDef* SPIperiph); // Gets a frame of data received over SPI
-// TODO add a suitable receive data method
+uint16_t spiReceiveFrame(SPI_TypeDef* SPIperiph); // Received a frame of data over SPI (sends a junk frame to get a frame)
+uint16_t spiGetData(SPI_TypeDef* SPIperiph); // Gets the last received data frame
