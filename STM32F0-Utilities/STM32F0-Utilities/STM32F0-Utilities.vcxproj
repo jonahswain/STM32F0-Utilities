@@ -26,6 +26,7 @@
     <ClInclude Include="include\STM32F0_INTERRUPTS.h" />
     <ClInclude Include="include\STM32F0_LCD.h" />
     <ClInclude Include="include\STM32F0_OTHER.h" />
+    <ClInclude Include="include\STM32F0_SPI.h" />
     <ClInclude Include="include\STM32F0_TIM.h" />
     <ClInclude Include="include\STM32F0_UCTDEV.h" />
     <ClInclude Include="include\STM32F0_UTIL.h" />
@@ -37,6 +38,7 @@
     <ClCompile Include="src\STM32F0_INTERRUPTS.c" />
     <ClCompile Include="src\STM32F0_LCD.c" />
     <ClCompile Include="src\STM32F0_OTHER.c" />
+    <ClCompile Include="src\STM32F0_SPI.c" />
     <ClCompile Include="src\STM32F0_TIM.c" />
     <ClCompile Include="src\STM32F0_UCTDEV.c" />
     <ClCompile Include="src\__TEMPLATE.c" />
