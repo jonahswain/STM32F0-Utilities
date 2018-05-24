@@ -79,5 +79,8 @@
     <ClCompile Include="src\STM32F0_SPI.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="example code\self_test.c">
+      <Filter>Example Code</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
