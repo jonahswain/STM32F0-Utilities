@@ -4,7 +4,7 @@ A Collection of utilities for STM32F0 microcontrollers, primarily targeted at th
 
 Author: Jonah Swain (SWNJON003)
 Date created: 17/04/2018
-Date modified: 23/05/2018
+Date modified: 24/05/2018
 
 Module: UCTDEV
 
@@ -27,6 +27,7 @@ void init_peripherals() {
 	init_ADC(ADC_10BIT); // Initialise the ADC with 10 bit resolution
 	init_SYSCFG(); // Initialise SYSCFG module (needed for interrupts)
 	init_LCD(); // Initialise the LCD
+	init_EEPROM(); // Initialise the SPI EEPROM
 
 	GPIOB->MODER |= 0x00005555; // Set the red LED pin modes to output
 
@@ -85,7 +86,7 @@ void init_EEPROM() {
 	afSelect(EEPROM_SCK, GPIO_AF0); // Map SCK to AF0 (SPI)
 	digitalWrite(EEPROM_CS, HIGH); // Set CS HIGH
 
-	init_SPI(SPI2, SPI_BAUD_3MHZ, SPI_MASTER_MODE, SPI_MSB_FIRST, SPI_FRAMESIZE_8BIT, 0, 0, 0, 0, 0, 1); // Initialise and configure SPI in 8-bit mode 0,0
+	init_SPI(SPI2, SPI_BAUD_3MHZ, SPI_MASTER_MODE, SPI_MSB_FIRST, SPI_FRAMESIZE_8BIT, SPI_BIDIOE, SPI_MULTIMASTER_DISABLE, 0, 0, 0, SPI_RXNE_8BIT); // Initialise and configure SPI in 8-bit mode 0,0
 
 }
 

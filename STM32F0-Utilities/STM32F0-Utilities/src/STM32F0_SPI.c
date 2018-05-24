@@ -4,7 +4,7 @@ A Collection of utilities for STM32F0 microcontrollers, primarily targeted at th
 
 Author: Jonah Swain (SWNJON003)
 Date created: 04/05/2018
-Date modified: 23/05/2018
+Date modified: 24/05/2018
 
 Module: SPI
 Functions for using the Serial Peripheral Interface peripheral module
@@ -62,10 +62,10 @@ void init_SPI(SPI_TypeDef* SPIperiph, uint8_t BAUD, int masterMode, int frameFor
 
 	// Frame format
 	if (frameFormat) {
-		SPIperiph->CR1 &= ~SPI_CR1_LSBFIRST; // Set to MSB first
+		SPIperiph->CR1 |= SPI_CR1_LSBFIRST; // Set to LSB first
 	}
 	else {
-		SPIperiph->CR1 |= SPI_CR1_LSBFIRST; // Set to LSB first
+		SPIperiph->CR1 &= ~SPI_CR1_LSBFIRST; // Set to MSB first
 	}
 
 	// Clock polarity
@@ -100,10 +100,10 @@ void init_SPI(SPI_TypeDef* SPIperiph, uint8_t BAUD, int masterMode, int frameFor
 	}
 
 	if (dataTransferMode & SPI_RXONLY) { // Bidirectional mode
-		SPIperiph->CR1 |= SPI_CR1_BIDIMODE; // Receive only
+		SPIperiph->CR1 |= SPI_CR1_RXONLY; // Receive only
 	}
 	else {
-		SPIperiph->CR1 &= ~SPI_CR1_BIDIMODE; // Full duplex
+		SPIperiph->CR1 &= ~SPI_CR1_RXONLY; // Full duplex
 	}
 
 	// CRC
