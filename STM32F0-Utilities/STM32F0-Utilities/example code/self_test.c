@@ -58,7 +58,6 @@ void testEEPROM();
 void fullSelfTest() {
 	// The full complement of self tests
 	// Initial setup
-	uint8_t count = 0;
 	startRepeatingTimer(TIM6, 20); // Set TIM6 to overflow every ~20ms
 	timerInterruptEnable(TIM6, 255); // Enable TIM6 interrupt
 
