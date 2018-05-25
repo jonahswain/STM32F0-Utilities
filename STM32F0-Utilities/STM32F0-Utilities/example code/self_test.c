@@ -37,11 +37,7 @@ Rename this file to 'main.c'
 /* GLOBAL VARIABLES */
 uint8_t eepromTestData[] = { 0xEE, 0xE2, 0x04, 0x6F }; // EEPROM test data
 uint8_t eepromSignature[] = { 'J', 'S' }; // A personal touch
-uint8_t ledPattern = 0; // Pattern to display on LEDs
-uint8_t ledDirection = 0; // Direction to move LED pattern (initial stage)
 uint8_t menuPosition = 0;
-uint8_t rLED = 0;
-uint8_t gLED = 0;
 
 /* FUNCTIONS */
 
@@ -49,14 +45,20 @@ void fullSelfTest() {
 	// The full complement of self tests
 	// Initial setup
 	uint8_t count = 0;
-	startRepeatingTimer
-	// HERE
+	startRepeatingTimer(TIM6, 20); // Set TIM6 to overflow every ~20ms
+	timerInterruptEnable(TIM6, 255); // Enable TIM6 interrupt
 
 	if (GPIOA->IDR & 0x000F) {
 		// Push-button pressed in
 		lcdWrite("Release all", "push buttons"); // Display message on LCD
 		while (GPIOA->IDR & 0x000F); // Wait for buttons to be released
 	}
+
+	lcdWrite("Press SW0", ""); // Display message on LCD
+	while (digitalRead(SW0)); // Wait for SW0 pressed
+
+	nvicDisableInterrupt(17); // Disable TIM6 interrupt
+	// HERE
 
 }
 
@@ -68,8 +70,58 @@ void pinInterruptTriggered(IOPin_TypeDef* iopin) {
 	// Function called when a pin interrupt is triggered
 }
 
-void TIM6_IRQHandler() {
+void TIM6_DAC_IRQHandler() {
 	// TIM6 ISR
+	static int rLED = 0;
+	static int gLED = 255;
+	static int rIncrement = 5;
+	static int gIncrement = 5;
+	static uint8_t ledPattern;
+	static int ledDirection = 0;
+	static uint8_t counter = 0;
+
+	clearStatusFlag(TIM6); // Clear the interrupt flag
+
+	rLED += rIncrement; // Increment red PWM value
+	if ((rLED > 255) || (rLED < 0)) { // Check for overflow
+		rIncrement *= -1; // Reverse direction
+		rLED += rIncrement; // Increment again
+	}
+
+	gLED += gIncrement; // Increment green PWM value
+	if ((gLED > 255) || (gLED < 0)) { // Check for overflow
+		gIncrement *= -1; // Reverse direction
+		gLED += gIncrement; // Increment again
+	}
+
+	pwmWrite(TIM2, 3, rLED); // Set LED PWM
+	pwmWrite(TIM2, 4, gLED); // Set LED PWM
+
+	counter++;
+	if (counter > 50) {
+		// Move LEDs every second
+		counter = 0;
+		if (ledDirection == 0) {
+			ledPattern = 1;
+			ledDirection = -1;
+		}
+		else if (ledDirection == -1) {
+			ledPattern << 1;
+		}
+		else if (ledDirection == 1) {
+			ledPattern >> 1;
+		}
+		if (ledPattern == 0) {
+			if (ledDirection == -1) {
+				ledPattern = 0x40;
+			}
+			else if (ledDirection == 1) {
+				ledPattern = 0x02;
+			}
+			ledDirection *= -1;
+		}
+		ledWrite(ledPattern);
+	}
 
 }
 
