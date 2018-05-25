@@ -86,10 +86,96 @@ void fullSelfTest() {
 
 void menu() {
 	// Menu of self-tests to display on LCD
+	if (menuPosition == 0) {
+		lcdWrite("Self-tests:", "         \x7E      ");
+	}
+	else if (menuPosition == 1) {
+		lcdWrite("Red LEDs", " RUN  \x7F  \x7E      ");
+	}
+	else if (menuPosition == 2) {
+		lcdWrite("Push buttons", " RUN  \x7F  \x7E      ");
+	}
+	else if (menuPosition == 3) {
+		lcdWrite("Potentiometers", " RUN  \x7F  \x7E      ");
+	}
+	else if (menuPosition == 4) {
+		lcdWrite("Red-Green LED", " RUN  \x7F  \x7E      ");
+	}
+	else if (menuPosition == 5) {
+		lcdWrite("Temp sensor", " RUN  \x7F  \x7E      ");
+	}
+	else if (menuPosition == 6) {
+		lcdWrite("EEPROM", " RUN  \x7F  \x7E      ");
+	}
+	else if (menuPosition == 7) {
+		lcdWrite("Factory config", " SET  \x7F         ");
+	}
 }
 
 void pinInterruptTriggered(IOPin_TypeDef* iopin) {
 	// Function called when a pin interrupt is triggered
+	__cpuHoldDelay(1000); // Wait to avoid switch bounce
+	if (menuPosition != 255) {
+		// Ensure that the interrupt was not caused by a button being pressed for a self-test
+		if (!digitalRead(SW0)) {
+			// SW0 (Run) pressed
+			if (menuPosition == 1) {
+				// Run LED test
+				menuPosition = 255;
+				testLEDs();
+				menuPosition = 1;
+			}
+			else if (menuPosition == 2) {
+				// Run Push-button test
+				menuPosition = 255;
+				testPushButtons();
+				menuPosition = 2;
+			}
+			else if (menuPosition == 3) {
+				// Run Potentiometer test
+				menuPosition = 255;
+				testPotentiometers();
+				menuPosition = 3;
+			}
+			else if (menuPosition == 4) {
+				// Run Red-Green LED test
+				menuPosition = 255;
+				testRGLED();
+				menuPosition = 4;
+			}
+			else if (menuPosition == 5) {
+				// Run Temperature sensor test
+				menuPosition = 255;
+				testTempSensor();
+				menuPosition = 5;
+			}
+			else if (menuPosition == 6) {
+				// Run EEPROM test
+				menuPosition = 255;
+				testEEPROM();
+				menuPosition = 6;
+			}
+			else if (menuPosition == 7) {
+				// Reset test completion byte in EEPROM to load default configuration on next reset
+				eepromWrite(EEPROM_TESTCOMPL_OFFSET, 0); // Write to EEPROM
+				lcdWrite("Reboot to load", "Factory config");
+				while (1); // Wait forever
+			}
+		}
+		else if (!digitalRead(SW1)) {
+			// SW1 (Left) pressed
+			if (menuPosition > 0) {
+				menuPosition--; // Decrement the menu position
+			}
+		}
+		else if (!digitalRead(SW1)) {
+			// SW2 (Right) pressed
+			if (menuPosition < 7) {
+				menuPosition++; // Increment the menu position
+			}
+		}
+		menu(); // Display the menu
+	}
 }
 
 void TIM6_DAC_IRQHandler() {
