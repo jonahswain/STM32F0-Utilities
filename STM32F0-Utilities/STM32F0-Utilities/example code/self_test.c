@@ -39,17 +39,38 @@ uint8_t eepromTestData[] = { 0xEE, 0xE2, 0x04, 0x6F }; // EEPROM test data
 uint8_t eepromSignature[] = { 'J', 'S' }; // A personal touch
 uint8_t ledPattern = 0; // Pattern to display on LEDs
 uint8_t ledDirection = 0; // Direction to move LED pattern (initial stage)
-int mode = 0; // Testing mode
 uint8_t menuPosition = 0;
+uint8_t rLED = 0;
+uint8_t gLED = 0;
 
 /* FUNCTIONS */
 
 void fullSelfTest() {
 	// The full complement of self tests
+	// Initial setup
+	uint8_t count = 0;
+	startRepeatingTimer
+	// HERE
+
+	if (GPIOA->IDR & 0x000F) {
+		// Push-button pressed in
+		lcdWrite("Release all", "push buttons"); // Display message on LCD
+		while (GPIOA->IDR & 0x000F); // Wait for buttons to be released
+	}
+
 }
 
 void menu() {
 	// Menu of self-tests to display on LCD
+}
+
+void pinInterruptTriggered(IOPin_TypeDef* iopin) {
+	// Function called when a pin interrupt is triggered
+}
+
+void TIM6_IRQHandler() {
+	// TIM6 ISR
+
 }
 
 int testEEPROMWrite() {
@@ -81,7 +102,37 @@ int testEEPROMRead() {
 /* MAIN FUNCTION */
 void main() {
 	// Setup code, to run once
-
+	init_peripherals(); // Initialise all the onboard peripherals
+	lcdWrite("Welcome!", "STM32F0 ready"); // Display welcome message
+	startTimer(TIM6, 999); // Start a timer for 1 second
+	while (!timerComplete(TIM6)); // Wait for timer to complete
+	if (eepromRead(EEPROM_TESTCOMPL_OFFSET) == 0xFF) {
+		if (testEEPROMRead()) {
+			// EEPROM test passed
+			lcdWrite("EEPROM Pass!", "Press SW0"); // Display message on LCD
+			while (!digitalRead(SW0)); // Wait for button press
+		}
+		pinInterruptEnable(SW0, 0, 1, 255); // Enable falling edge interrupt on SW0
+		pinInterruptEnable(SW1, 0, 1, 255); // Enable falling edge interrupt on SW1
+		pinInterruptEnable(SW2, 0, 1, 255); // Enable falling edge interrupt on SW2
+		pinInterruptEnable(SW3, 0, 1, 255); // Enable falling edge interrupt on SW3
+		menu(); // Call the menu
+	}
+	else {
+		if (testEEPROMRead()) {
+			// EEPROM test passed
+			lcdWrite("EEPROM Pass!", "Press SW0"); // Display message on LCD
+			while (!digitalRead(SW0)); // Wait for button press
+			eepromWrite(EEPROM_TESTCOMPL_OFFSET, 0xFF); // Write test complete data to EEPROM
+			for (uint16_t i = 0; i < 2; i++) {
+				eepromWrite(i + EEPROM_SIG_OFFSET, eepromSignature[i]); // A personal touch
+			}
+			lcdWrite("Testing Complete", "Reboot!"); // Display message on LCD
+		}
+		else {
+			fullSelfTest(); // Run the full complement of self-tests
+		}
+	}
 
 	// Main loop
 	while(1) {

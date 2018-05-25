@@ -51,7 +51,6 @@ void init_peripherals() {
 	pwmEnable(TIM2, 3); // Enable PWM output on TIM2 CH3
 	pwmEnable(TIM2, 4); // Enable PWM output on TIM2 CH4
 
-	//TODO add more
 }
 
 void init_tempSensor() {
