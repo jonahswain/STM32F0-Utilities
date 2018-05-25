@@ -4,7 +4,7 @@ A Collection of utilities for STM32F0 microcontrollers, primarily targeted at th
 
 Author: Jonah Swain (SWNJON003)
 Date created: 24/05/2018
-Date modified: 24/05/2018
+Date modified: 25/05/2018
 
 Self Test
 Example firmware to load on to the board to do a full peripheral self-test and demonstrate the features
