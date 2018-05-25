@@ -5,7 +5,7 @@ A Collection of utilities for STM32F0 microcontrollers, primarily targeted at th
 
 Author: Jonah Swain (SWNJON003)
 Date created: 30/04/2018
-Date modified: 01/05/2018
+Date modified: 25/05/2018
 
 Module: TIM
 Functions for using the timers (re-write)
@@ -53,6 +53,7 @@ void configure_PWM(TIM_TypeDef* timer); // Configures a timer to be used for out
 // Timing functions
 void startTimer(TIM_TypeDef* timer, uint32_t ticks); // Starts a timer to count up to <ticks>
 void startRepeatingTimer(TIM_TypeDef* timer, uint32_t ticks); // Starts a timer to repeatedly count up to <ticks>
+void stopTimer(TIM_TypeDef* timer); // Stops a timer (causes an update event and triggers the interrupt if enabled)
 uint32_t queryTimer(TIM_TypeDef* timer); // Returns the current status of a timer (number of ticks counted)
 int timerComplete(TIM_TypeDef* timer); // Returns whether a timer has completed (boolean)
 void clearStatusFlag(TIM_TypeDef* timer); // Clears the status flag of timer completion

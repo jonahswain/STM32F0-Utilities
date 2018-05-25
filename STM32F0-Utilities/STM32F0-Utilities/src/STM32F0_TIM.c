@@ -4,7 +4,7 @@ A Collection of utilities for STM32F0 microcontrollers, primarily targeted at th
 
 Author: Jonah Swain (SWNJON003)
 Date created: 30/04/2018
-Date modified: 01/05/2018
+Date modified: 25/05/2018
 
 Module: TIM
 Functions for using the timers (re-write)
@@ -146,6 +146,13 @@ void startRepeatingTimer(TIM_TypeDef* timer, uint32_t ticks) {
 	timer->EGR |= TIM_EGR_UG; // Reset the timer
 	timer->SR &= ~TIM_SR_UIF; // Clear the status flag
 	timer->CR1 |= TIM_CR1_CEN; // Enable the counter
+}
+
+void stopTimer(TIM_TypeDef* timer) {
+	// Stops a timer
+	timer->CR1 &= ~TIM_CR1_CEN; // Disable the timer
+	timer->EGR |= TIM_EGR_UG; // Reset the timer
+	timer->SR &= ~TIM_SR_UIF; // Clear the status flag
 }
 
 uint32_t queryTimer(TIM_TypeDef* timer) {
