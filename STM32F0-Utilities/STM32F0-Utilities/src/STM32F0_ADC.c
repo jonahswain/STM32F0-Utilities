@@ -24,7 +24,7 @@ void init_ADC(int resolution) {
 	// Initialise and calibrate the ADC
 	RCC->APB2ENR |= RCC_APB2ENR_ADCEN; // Enable clock for the ADC
 	ADC1->CR |= ADC_CR_ADCAL; // Start ADC calibration
-	while ((ADC1->CR & ADC_CR_ADCAL); // Wait for calibration to complete
+	while ((ADC1->CR & ADC_CR_ADCAL)); // Wait for calibration to complete
 	ADC1->CR |= ADC_CR_ADEN; // Enable the ADC
 	while (!(ADC1->ISR & ADC_ISR_ADRDY)); // Wait for ADC to be ready
 	if ((resolution >= 0) && (resolution <= 3)) {
