@@ -41,6 +41,20 @@ uint8_t menuPosition = 0;
 
 /* FUNCTIONS */
 
+// Function declarations
+void fullSelfTest();
+void menu();
+int testEEPROMWrite();
+int testEEPROMRead();
+uint8_t readPot(uint8_t pot);
+void testLEDs();
+void testPushButtons();
+void testPotentiometers();
+void testRGLED();
+void testTempSensor();
+void testEEPROM();
+
+
 void fullSelfTest() {
 	// The full complement of self tests
 	// Initial setup
@@ -61,6 +75,7 @@ void fullSelfTest() {
 
 	nvicDisableInterrupt(17); // Disable TIM6 interrupt
 	stopTimer(TIM6); // Stop the timer
+	rgLedWrite(0, 0); // Turn off the RG LED
 
 	testPotentiometers(); // Test pots
 
@@ -80,7 +95,7 @@ void fullSelfTest() {
 	lcdWrite("Press SW3", ""); // Display message on LCD
 	while (digitalRead(SW3)); // Wait for SW3 pressed
 
-
+	testEEPROM(); // Test EEPROM
 
 }
 
@@ -168,7 +183,7 @@ void pinInterruptTriggered(IOPin_TypeDef* iopin) {
 				menuPosition--; // Decrement the menu position
 			}
 		}
-		else if (!digitalRead(SW1)) {
+		else if (!digitalRead(SW2)) {
 			// SW2 (Right) pressed
 			if (menuPosition < 7) {
 				menuPosition++; // Increment the menu position
@@ -185,7 +200,7 @@ void TIM6_DAC_IRQHandler() {
 	static int rIncrement = 5;
 	static int gIncrement = 5;
 	static uint8_t ledPattern;
-	static int ledDirection = 0;
+	static signed int ledDirection = 0;
 	static uint8_t counter = 0;
 
 	clearStatusFlag(TIM6); // Clear the interrupt flag
@@ -209,15 +224,16 @@ void TIM6_DAC_IRQHandler() {
 	if (counter > 50) {
 		// Move LEDs every second
 		counter = 0;
+		
 		if (ledDirection == 0) {
 			ledPattern = 1;
 			ledDirection = -1;
 		}
 		else if (ledDirection == -1) {
-			ledPattern << 1;
+			ledPattern <<= 1;
 		}
 		else if (ledDirection == 1) {
-			ledPattern >> 1;
+			ledPattern >>= 1;
 		}
 		if (ledPattern == 0) {
 			if (ledDirection == -1) {
@@ -228,6 +244,7 @@ void TIM6_DAC_IRQHandler() {
 			}
 			ledDirection *= -1;
 		}
+		
 		ledWrite(ledPattern);
 	}
 
@@ -235,7 +252,9 @@ void TIM6_DAC_IRQHandler() {
 
 void TIM14_IRQHandler() {
 	static uint8_t ledPattern = 0;
-	static int ledDirection = 0;
+	static signed int ledDirection = 0;
+
+	clearStatusFlag(TIM14); // Clear the interrupt flag
 
 	// Move the LEDs every second for LED test
 	if (ledDirection == 0) {
@@ -243,10 +262,10 @@ void TIM14_IRQHandler() {
 		ledDirection = -1;
 	}
 	else if (ledDirection == -1) {
-		ledPattern << 1;
+		ledPattern <<= 1;
 	}
 	else if (ledDirection == 1) {
-		ledPattern >> 1;
+		ledPattern >>= 1;
 	}
 	if (ledPattern == 0) {
 		if (ledDirection == -1) {
@@ -295,7 +314,7 @@ uint8_t readPot(uint8_t pot) {
 	}
 	else {
 		// Pot 1
-		return (uint8_t)(analogRead(POT0) >> 2);
+		return (uint8_t)(analogRead(POT1) >> 2);
 	}
 }
 
@@ -312,6 +331,7 @@ void testLEDs() {
 	while ((GPIOA->IDR & 0x000F) == 0x000F); // Wait for button press
 	nvicDisableInterrupt(19); // Disable TIM14 interrupt
 	stopTimer(TIM14); // Stop TIM14
+	ledWrite(0); // Clear LEDs
 }
 
 void testPushButtons() {
@@ -328,13 +348,13 @@ void testPushButtons() {
 		while ((GPIOA->IDR & 0x000F) != 0x000F); // Wait for buttons to be released
 	}
 	lcdWrite("Press SW0", "");
-	while (!digitalRead(SW0));
+	while (digitalRead(SW0));
 	lcdWrite("Press SW1", "");
-	while (!digitalRead(SW1));
+	while (digitalRead(SW1));
 	lcdWrite("Press SW2", "");
-	while (!digitalRead(SW2));
+	while (digitalRead(SW2));
 	lcdWrite("Press SW3", "");
-	while (!digitalRead(SW3));
+	while (digitalRead(SW3));
 
 	lcdWrite("Push buttons", "pass!"); // Display message on LCD
 	startTimer(TIM6, 999); // Set timer for 1 second
@@ -363,6 +383,7 @@ void testPotentiometers() {
 	while (readPot(1) > 5) {
 		ledWrite(readPot(1)); // Display pot value on LEDs
 	}
+	ledWrite(0);
 	lcdWrite("Potentiometers", "Pass!"); // Display message on LCD
 	startTimer(TIM6, 999); // Set timer for 1 second
 	while (!timerComplete(TIM6)); // Wait for timer to complete
@@ -375,7 +396,7 @@ void testRGLED() {
 	startTimer(TIM6, 999); // Set timer for 1 second
 	while (!timerComplete(TIM6)); // Wait for timer to complete
 	lcdWrite("Red: POT0", "Green: POT1"); // Display message on LCD
-	startTimer(TIM6, 999); // Set timer for 1 second
+	startTimer(TIM6, 1999); // Set timer for 2 seconds
 	while (!timerComplete(TIM6)); // Wait for timer to complete
 	lcdWrite("Press any key", "when complete"); // Display message on LCD
 	while ((GPIOA->IDR & 0x000F) == 0x000F) {
@@ -441,6 +462,7 @@ void testEEPROM() {
 		while (!timerComplete(TIM6)); // Wait for timer to complete
 		lcdWrite("EEPROM fail :(", "reboot now"); // Display message on LCD
 	}
+	while (1); // Wait for reboot
 }
 
 /* MAIN FUNCTION */
@@ -450,7 +472,7 @@ void main() {
 	lcdWrite("Welcome!", "STM32F0 ready"); // Display welcome message
 	startTimer(TIM6, 999); // Start a timer for 1 second
 	while (!timerComplete(TIM6)); // Wait for timer to complete
-	if (eepromRead(EEPROM_TESTCOMPL_OFFSET) == 0xFF) {
+	if (eepromRead(EEPROM_TESTCOMPL_OFFSET) == 0xAB) {
 		if (testEEPROMRead()) {
 			// EEPROM test passed
 			lcdWrite("EEPROM Pass!", "Press any key"); // Display message on LCD
@@ -467,7 +489,7 @@ void main() {
 			// EEPROM test passed
 			lcdWrite("EEPROM Pass!", "Press any key"); // Display message on LCD
 			while ((GPIOA->IDR & 0x000F) == 0x000F); // Wait for button press
-			eepromWrite(EEPROM_TESTCOMPL_OFFSET, 0xFF); // Write test complete data to EEPROM
+			eepromWrite(EEPROM_TESTCOMPL_OFFSET, 0xAB); // Write test complete data to EEPROM
 			for (uint16_t i = 0; i < 2; i++) {
 				eepromWrite(i + EEPROM_SIG_OFFSET, eepromSignature[i]); // A personal touch
 			}
