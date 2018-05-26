@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="include\stm32f0xx.h" />
     <ClInclude Include="include\STM32F0_ADC.h" />
+    <ClInclude Include="include\STM32F0_DAC.h" />
     <ClInclude Include="include\STM32F0_GPIO.h" />
     <ClInclude Include="include\STM32F0_I2C.h" />
     <ClInclude Include="include\STM32F0_INTERRUPTS.h" />
@@ -34,6 +35,7 @@
   <ItemGroup>
     <ClCompile Include="example code\self_test.c" />
     <ClCompile Include="src\STM32F0_ADC.c" />
+    <ClCompile Include="src\STM32F0_DAC.c" />
     <ClCompile Include="src\STM32F0_GPIO.c" />
     <ClCompile Include="src\STM32F0_I2C.c" />
     <ClCompile Include="src\STM32F0_INTERRUPTS.c" />
