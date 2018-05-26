@@ -18,3 +18,18 @@ Functions for configuring/controlling the direct memory access module
 #endif
 
 /* FUNCTIONS */
+void init_DMA(uint8_t channel, uint32_t peripheralAddress, uint32_t memoryAddress, uint16_t dataSize, uint8_t priority, uint8_t transferDirection, uint8_t transferMode, uint8_t incrementMode, uint8_t peripheralTransferSize, uint8_t memoryTransferSize) {
+	// Initialises and configures a DMA channel
+}
+
+void dmaChannelDisable(uint8_t channel) {
+	// Disables a DMA channel
+}
+
+void dmaMemCopy(uint8_t channel, uint32_t fromAddress, uint32_t toAddress, uint16_t dataSize, uint8_t transferSize, uint8_t priority) {
+	// Copies a block of memory from one location to another
+}
+
+void dmaInterruptEnable(uint8_t channel, uint8_t interruptSource, uint8_t priority) {
+	// Enables DMA interrupts for a channel
+}
