@@ -47,6 +47,9 @@
     <ClInclude Include="include\STM32F0_SPI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\STM32F0_DMA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\STM32F0_ADC.c">
@@ -81,6 +84,9 @@
     </ClCompile>
     <ClCompile Include="example code\self_test.c">
       <Filter>Example Code</Filter>
+    </ClCompile>
+    <ClCompile Include="src\STM32F0_DMA.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
