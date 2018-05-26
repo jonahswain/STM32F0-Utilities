@@ -47,13 +47,13 @@ void menu();
 int testEEPROMWrite();
 int testEEPROMRead();
 uint8_t readPot(uint8_t pot);
+void moveLEDs();
 void testLEDs();
 void testPushButtons();
 void testPotentiometers();
 void testRGLED();
 void testTempSensor();
 void testEEPROM();
-
 
 void fullSelfTest() {
 	// The full complement of self tests
@@ -249,33 +249,33 @@ void TIM6_DAC_IRQHandler() {
 
 }
 
-void TIM14_IRQHandler() {
-	static uint8_t ledPattern = 0;
-	static signed int ledDirection = 0;
+void moveLEDs() {
+	static uint8_t rLedPattern = 0;
+	static signed int rLedDirection = 0;
 
-	clearStatusFlag(TIM14); // Clear the interrupt flag
+	clearStatusFlag(TIM16); // Clear the interrupt flag
 
 	// Move the LEDs every second for LED test
-	if (ledDirection == 0) {
-		ledPattern = 1;
-		ledDirection = -1;
+	if (rLedDirection == 0) {
+		rLedPattern = 1;
+		rLedDirection = -1;
 	}
-	else if (ledDirection == -1) {
-		ledPattern <<= 1;
+	else if (rLedDirection == -1) {
+		rLedPattern <<= 1;
 	}
-	else if (ledDirection == 1) {
-		ledPattern >>= 1;
+	else if (rLedDirection == 1) {
+		rLedPattern >>= 1;
 	}
-	if (ledPattern == 0) {
-		if (ledDirection == -1) {
-			ledPattern = 0x40;
+	if (rLedPattern == 0) {
+		if (rLedDirection == -1) {
+			rLedPattern = 0x40;
 		}
-		else if (ledDirection == 1) {
-			ledPattern = 0x02;
+		else if (rLedDirection == 1) {
+			rLedPattern = 0x02;
 		}
-		ledDirection *= -1;
+		rLedDirection *= -1;
 	}
-	ledWrite(ledPattern);
+	ledWrite(rLedPattern);
 
 }
 
@@ -319,18 +319,21 @@ uint8_t readPot(uint8_t pot) {
 
 void testLEDs() {
 	// Test red LEDs
-
+	
 	lcdWrite("Testing", "Red LEDs"); // Display message on LCD
-	startTimer(TIM6, 999); // Set timer for 1 second
-	init_timer(TIM14, 47999); // Initialise TIM14
-	startRepeatingTimer(TIM14, 999); // Set TIM14 to overflow every second
-	timerInterruptEnable(TIM14, 255); // Enable TIM14 interrupt
+	startTimer(TIM6, 999); // Start a timer for 1s
 	while (!timerComplete(TIM6)); // Wait for timer to complete
 	lcdWrite("Press any key", "to continue"); // Display message on LCD
-	while ((GPIOA->IDR & 0x000F) == 0x000F); // Wait for button press
-	nvicDisableInterrupt(19); // Disable TIM14 interrupt
-	stopTimer(TIM14); // Stop TIM14
-	ledWrite(0); // Clear LEDs
+	startRepeatingTimer(TIM6, 999); // Start a timer for 1s
+	while ((GPIOA->IDR & 0x000F) == 0x000F) {
+		// Wait for button press
+		if (timerComplete(TIM6)) {
+			clearStatusFlag(TIM6);
+			moveLEDs(); // Cycle LEDs when timer completes
+		}
+	}
+	stopTimer(TIM6); // Stop timer
+	ledWrite(0); // Turn off LEDs
 }
 
 void testPushButtons() {
