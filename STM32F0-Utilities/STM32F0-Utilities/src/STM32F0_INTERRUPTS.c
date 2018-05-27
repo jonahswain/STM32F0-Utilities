@@ -118,13 +118,13 @@ void pinInterruptEnable(IOPin_TypeDef* iopin, int risingEdgeEnable, int fallingE
 
 	int pin_irqn = 0; // IRQn for the pin interrupt
 	if ((iopin->pin == 0) || (iopin->pin == 1)) {
-		pin_irqn = 5; // EXTI0_1_IRQn
+		pin_irqn = EXTI0_1_IRQn; // EXTI0_1_IRQn
 	}
 	else if ((iopin->pin == 2) || (iopin->pin == 3)) {
-		pin_irqn = 6; // EXTI2_3_IRQn
+		pin_irqn = EXTI2_3_IRQn; // EXTI2_3_IRQn
 	}
 	else {
-		pin_irqn = 7; // EXTI4_15_IRQn
+		pin_irqn = EXTI4_15_IRQn; // EXTI4_15_IRQn
 	}
 
 	nvicSetPriority(pin_irqn, priority); // Set the interrupt priority in the NVIC

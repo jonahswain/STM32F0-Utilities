@@ -183,28 +183,28 @@ void timerInterruptEnable(TIM_TypeDef* timer, uint8_t priority) {
 
 	int irqn = -1; // Get IRQn (see stm32f0xx.h for IRQns
 	if (timer == TIM1) {
-		irqn = 13;
+		irqn = TIM1_BRK_UP_TRG_COM_IRQn;
 	}
 	else if (timer == TIM2) {
-		irqn = 15;
+		irqn = TIM2_IRQn;
 	}
 	else if (timer == TIM3) {
-		irqn = 16;
+		irqn = TIM3_IRQn;
 	}
 	else if (timer == TIM6) {
-		irqn = 17;
+		irqn = TIM6_DAC_IRQn;
 	}
 	else if (timer == TIM14) {
-		irqn = 19;
+		irqn = TIM14_IRQn;
 	}
 	else if (timer == TIM15) {
-		irqn = 20;
+		irqn = TIM15_IRQn;
 	}
 	else if (timer == TIM16) {
-		irqn = 21;
+		irqn = TIM16_IRQn;
 	}
 	else if (timer == TIM17) {
-		irqn = 22;
+		irqn = TIM17_IRQn;
 	}
 
 	nvicSetPriority(irqn, priority); // Set the interrupt priority in the NVIC
