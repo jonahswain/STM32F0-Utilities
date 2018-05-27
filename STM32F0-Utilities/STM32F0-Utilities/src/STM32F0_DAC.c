@@ -125,10 +125,114 @@ void dacValueOut(uint8_t channel, uint16_t value, uint8_t mode) {
 
 void dacWaveOut(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length) {
 	// Outputs a series of analog values in sequence using the DAC
+	if (channel == 1) {
+		// Write to CH1
+		if (!(mode & DAC_MODE_RESOLUTION)) {
+			// 8 bit mode
+			for (uint16_t i = 0; i < length; i++) {
+				DAC->DHR8R1 = (0x00FF & values[i]);
+			}
+		}
+		else {
+			if (mode & DAC_MODE_DATAALIGNMENT) {
+				// 12 bit left aligned mode
+				for (uint16_t i = 0; i < length; i++) {
+					DAC->DHR12L1 = (0xFFF0 & values[i]);
+				}
+			}
+			else {
+				// 12 bit right aligned mode
+				for (uint16_t i = 0; i < length; i++) {
+					DAC->DHR12R1 = (0x0FFF & values[i]);
+				}
+			}
+		}
+	}
+	else if (channel == 2) {
+		// Write to CH2
+		if (!(mode & DAC_MODE_RESOLUTION)) {
+			// 8 bit mode
+			for (uint16_t i = 0; i < length; i++) {
+				DAC->DHR8R2 = (0x00FF & values[i]);
+			}
+		}
+		else {
+			if (mode & DAC_MODE_DATAALIGNMENT) {
+				// 12 bit left aligned mode
+				for (uint16_t i = 0; i < length; i++) {
+					DAC->DHR12L2 = (0xFFF0 & values[i]);
+				}
+			}
+			else {
+				// 12 bit right aligned mode
+				for (uint16_t i = 0; i < length; i++) {
+					DAC->DHR12R2 = (0x0FFF & values[i]);
+				}
+			}
+		}
+	}
 }
 
 void dacWaveGen(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length, uint32_t repetitions) {
 	// Outputs a series of analog values multiple times using the DAC
+	if (channel == 1) {
+		// Write to CH1
+		if (!(mode & DAC_MODE_RESOLUTION)) {
+			// 8 bit mode
+			for (; repetitions > 0; repetitions--) {
+				for (uint16_t i = 0; i < length; i++) {
+					DAC->DHR8R1 = (0x00FF & values[i]);
+				}
+			}
+		}
+		else {
+			if (mode & DAC_MODE_DATAALIGNMENT) {
+				// 12 bit left aligned mode
+				for (; repetitions > 0; repetitions--) {
+					for (uint16_t i = 0; i < length; i++) {
+						DAC->DHR12L1 = (0xFFF0 & values[i]);
+					}
+				}
+			}
+			else {
+				// 12 bit right aligned mode
+				for (; repetitions > 0; repetitions--) {
+					for (uint16_t i = 0; i < length; i++) {
+						DAC->DHR12R1 = (0x0FFF & values[i]);
+					}
+				}
+			}
+		}
+	}
+	else if (channel == 2) {
+		// Write to CH2
+		if (!(mode & DAC_MODE_RESOLUTION)) {
+			// 8 bit mode
+			for (; repetitions > 0; repetitions--) {
+				for (uint16_t i = 0; i < length; i++) {
+					DAC->DHR8R2 = (0x00FF & values[i]);
+				}
+			}
+		}
+		else {
+			if (mode & DAC_MODE_DATAALIGNMENT) {
+				// 12 bit left aligned mode
+				for (; repetitions > 0; repetitions--) {
+					for (uint16_t i = 0; i < length; i++) {
+						DAC->DHR12L2 = (0xFFF0 & values[i]);
+					}
+				}
+			}
+			else {
+				// 12 bit right aligned mode
+				for (; repetitions > 0; repetitions--) {
+					for (uint16_t i = 0; i < length; i++) {
+						DAC->DHR12R2 = (0x0FFF & values[i]);
+					}
+				}
+			}
+		}
+	}
 }
 
 void dacDMAWaveGen(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length, uint16_t period) {
