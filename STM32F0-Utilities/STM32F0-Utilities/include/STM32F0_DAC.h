@@ -47,6 +47,7 @@ Functions for operating the Digital to Analog converter
 #define DAC_MODE_12BIT 1
 #define DAC_MODE_RIGHTALIGN 0
 #define DAC_MODE_LEFTALIGN 2
+// Please note: 8-bit left aligned data is not permitted. 8-bit data is automatically treated as right-aligned.
 
 // Trigger sources
 #define DAC_TRIGGER_TIM6 0x0 // TIM6 TRGO event
