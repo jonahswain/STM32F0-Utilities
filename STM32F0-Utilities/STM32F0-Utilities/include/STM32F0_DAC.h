@@ -41,6 +41,13 @@ Functions for operating the Digital to Analog converter
 #define DAC_TRIGGER_ENABLE 1
 #define DAC_TRIGGER_DISABLE 0
 
+#define DAC_MODE_RESOLUTION 0x1 // Bit 0 is resolution bit in functions
+#define DAC_MODE_DATAALIGNMENT 0x2 // Bit 1 is data alignment bit in functions
+#define DAC_MODE_8BIT 0
+#define DAC_MODE_12BIT 1
+#define DAC_MODE_RIGHTALIGN 0
+#define DAC_MODE_LEFTALIGN 2
+
 // Trigger sources
 #define DAC_TRIGGER_TIM6 0x0 // TIM6 TRGO event
 #define DAC_TRIGGER_TIM3 0x1 // TIM3 TRGO event
@@ -59,28 +66,38 @@ triggerEnable - whether to wait for trigger to change output
 triggerSource - the source of the trigger
 */
 
-void analogWrite(uint8_t channel, uint16_t value); // Outputs an analog value using the DAC
+void analogWrite(uint8_t channel, uint8_t value); // Outputs an 8 bit analog value using the DAC
 
-void dacWaveOut(uint8_t channel, uint16_t* values, uint16_t length); // Outputs a series of analog values in sequence using the DAC
+void dacValueOut(uint8_t channel, uint16_t value, uint8_t mode); // Outputs an analog value using the DAC
+/*
+channel - the DAC channel to output on
+value - the value to output on the DAC
+mode - 8/12 bit, left/right aligned
+*/
+
+void dacWaveOut(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length); // Outputs a series of analog values in sequence using the DAC
 /*
 channel - the DAC channel to output on
 values - a pointer to an array of analog values to output
+mode - 8/12 bit, left/right aligned
 length - the number of values in the array
 */
 
-void dacWaveGen(uint8_t channel, uint16_t* values, uint16_t length, uint32_t repetitions); // Outputs a series of analog values multiple times using the DAC
+void dacWaveGen(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length, uint32_t repetitions); // Outputs a series of analog values multiple times using the DAC
 /*
 channel - the DAC channel to output on
 values -  a pointer to an array of analog values to output
+mode - 8/12 bit, left/right aligned
 length - the number of values in the array
 repetitions - the number of times to generate the waveform
 */
 
-void dacDMAWaveGen(uint8_t channel, uint16_t* values, uint16_t length, uint16_t period); // Enables waveform generation using DMA (repeats forever...)
+void dacDMAWaveGen(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length, uint16_t period); // Enables waveform generation using DMA (repeats forever...)
 /*
 NOTE: Uses DMA channel 2 and TIM17 for DAC channel 1 and DMA channel 3 and TIM16 for DAC channel 2
 channel - the DAC channel to output on
 values - a pointer to an array of analog values to output
+mode - 8/12 bit, left/right aligned
 length - the number of values in the array
 period - the approximate delay between values (in microseconds)
 */

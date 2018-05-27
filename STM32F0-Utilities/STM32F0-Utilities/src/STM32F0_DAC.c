@@ -23,19 +23,23 @@ void init_DAC(uint8_t channel, uint8_t buffer, uint8_t triggerEnable, uint8_t tr
 	// Initialises and configures  DAC channel
 }
 
-void analogWrite(uint8_t channel, uint16_t value) {
+void analogWrite(uint8_t channel, uint8_t value) {
+	// Outputs an 8 bit analog value using the DAC
+}
+
+void dacValueOut(uint8_t channel, uint16_t value, uint8_t mode) {
 	// Outputs an analog value using the DAC
 }
 
-void dacWaveOut(uint8_t channel, uint16_t* values, uint16_t length) {
+void dacWaveOut(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length) {
 	// Outputs a series of analog values in sequence using the DAC
 }
 
-void dacWaveGen(uint8_t channel, uint16_t* values, uint16_t length, uint32_t repetitions) {
+void dacWaveGen(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length, uint32_t repetitions) {
 	// Outputs a series of analog values multiple times using the DAC
 }
 
-void dacDMAWaveGen(uint8_t channel, uint16_t* values, uint16_t length, uint16_t period) {
+void dacDMAWaveGen(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length, uint16_t period) {
 	// Enables waveform generation using DMA (repeats forever...)
 }
 
