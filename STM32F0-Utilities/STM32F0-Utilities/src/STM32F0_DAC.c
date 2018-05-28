@@ -239,10 +239,80 @@ void dacWaveGen(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length
 	}
 }
 
+
+/*
+NOTE: Uses DMA channel 2 and TIM17 for DAC channel 1 and DMA channel 3 and TIM16 for DAC channel 2
+channel - the DAC channel to output on
+values - a pointer to an array of analog values to output
+mode - 8/12 bit, left/right aligned
+length - the number of values in the array
+period - the approximate delay between values (in microseconds)
+*/
 void dacDMAWaveGen(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length, uint16_t period) {
 	// Enables waveform generation using DMA (repeats forever...)
+	uint32_t peripheralAddress;
+	uint32_t memoryAddress = &values; // Address of waveform values in memory
+
+	if (channel == 1) {
+		// Configure channel 1
+		if (!(mode & DAC_MODE_RESOLUTION)) {
+			// 8 bit mode
+			peripheralAddress = (uint32_t)(&DAC->DHR8R1);
+		}
+		else {
+			if (mode & DAC_MODE_DATAALIGNMENT) {
+				// 12 bit left aligned mode
+				peripheralAddress = (uint32_t)(&DAC->DHR12L1);
+			}
+			else {
+				// 12 bit right aligned mode
+				peripheralAddress = (uint32_t)(&DAC->DHR12R1);
+			}
+		}
+		init_DMA(2, peripheralAddress, memoryAddress, length, DMA_PRIORITY_LOW, DMA_TRANSFERDIRECTION_M2P, DMA_TRANSFERMODE_CIRCULAR, DMA_INCREMENT_MEMORY, DMA_TRANSFERSIZE_HALFWORD, DMA_TRANSFERSIZE_HALFWORD); // Initialise DMA
+		init_timer(TIM17, 47); // Initialise timer 17 to tick every uS
+		startRepeatingTimer(TIM17, period - 1); // Set to overflow/update every period - 1 uS
+		TIM17->CR2 |= TIM_CR2_CCDS; // Change DMA request to send on update
+		TIM17->DIER |= TIM_DIER_UDE; // Enable DMA request generation
+		SYSCFG->CFGR1 |= SYSCFG_CFGR1_TIM17_DMA_RMP; // Remap TIM17 to trigger DMA
+	}
+	else if (channel == 2) {
+		// Configure channel 2
+		if (!(mode & DAC_MODE_RESOLUTION)) {
+			// 8 bit mode
+			peripheralAddress = (uint32_t)(&DAC->DHR8R2);
+		}
+		else {
+			if (mode & DAC_MODE_DATAALIGNMENT) {
+				// 12 bit left aligned mode
+				peripheralAddress = (uint32_t)(&DAC->DHR12L2);
+			}
+			else {
+				// 12 bit right aligned mode
+				peripheralAddress = (uint32_t)(&DAC->DHR12R2);
+			}
+		}
+		init_DMA(3, peripheralAddress, memoryAddress, length, DMA_PRIORITY_LOW, DMA_TRANSFERDIRECTION_M2P, DMA_TRANSFERMODE_CIRCULAR, DMA_INCREMENT_MEMORY, DMA_TRANSFERSIZE_HALFWORD, DMA_TRANSFERSIZE_HALFWORD); // Initialise DMA
+		init_timer(TIM16, 47); // Initialise timer 17 to tick every uS
+		startRepeatingTimer(TIM16, period - 1); // Set to overflow/update every period uS
+		TIM16->CR2 |= TIM_CR2_CCDS; // Change DMA request to send on update
+		TIM16->DIER |= TIM_DIER_UDE; // Enable DMA request generation
+	}
 }
 
 void dacDMAWaveGenDisable(uint8_t channel) {
 	// Disables waveform generation using DMA
+	if (channel == 1) {
+		// Stop wave gen on CH1
+		stopTimer(TIM17); // Stop the timer
+		TIM17->DIER &= ~TIM_DIER_UDE; // Disable DMA request generation
+		dmaChannelDisable(2); // Disable the DMA channel
+		SYSCFG->CFGR1 &= ~SYSCFG_CFGR1_TIM17_DMA_RMP; // Reset TIM17 mapping
+	}
+	else if (channel == 2) {
+		// Stop wave gen on CH2
+		stopTimer(TIM16); // Stop the timer
+		TIM16->DIER &= ~TIM_DIER_UDE; // Disable DMA request generation
+		dmaChannelDisable(3); // Disable the DMA channel
+	}
 }
