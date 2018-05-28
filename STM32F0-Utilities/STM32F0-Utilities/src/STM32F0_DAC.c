@@ -147,6 +147,7 @@ void dacWaveOut(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length
 				}
 			}
 		}
+		DAC->DHR12R1 = 0; // Set back to 0 when complete
 	}
 	else if (channel == 2) {
 		// Write to CH2
@@ -170,6 +171,7 @@ void dacWaveOut(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length
 				}
 			}
 		}
+		DAC->DHR12R2 = 0; // Set back to 0 when complete
 	}
 }
 
@@ -203,6 +205,7 @@ void dacWaveGen(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length
 				}
 			}
 		}
+		DAC->DHR12R1 = 0; // Set back to 0 when complete
 	}
 	else if (channel == 2) {
 		// Write to CH2
@@ -232,6 +235,7 @@ void dacWaveGen(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length
 				}
 			}
 		}
+		DAC->DHR12R2 = 0; // Set back to 0 when complete
 	}
 }
 
