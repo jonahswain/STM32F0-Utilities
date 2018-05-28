@@ -12,6 +12,9 @@
     <Filter Include="Example Code">
       <UniqueIdentifier>{49538efa-2aee-4d87-b3b4-a185ca194367}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Waveforms">
+      <UniqueIdentifier>{6c0d0499-17a6-41e4-9140-4afa6c172a6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\STM32F0_ADC.h">
@@ -49,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="include\STM32F0_DAC.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="waveforms\WAVE_SINE256.h">
+      <Filter>Waveforms</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
