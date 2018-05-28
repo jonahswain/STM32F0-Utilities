@@ -65,6 +65,11 @@ Includes macros and defines for things on the board
 #define STM32F0_DAC_H
 #endif
 
+#ifndef STM32F0_DMA_H
+#include "STM32F0_DMA.h"
+#define STM32F0_DMA_H
+#endif
+
 #ifndef STM32F0_OTHER_H
 #include "STM32F0_OTHER.h"
 #define STM32F0_OTHER_H
