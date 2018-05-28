@@ -56,6 +56,9 @@
     <ClInclude Include="waveforms\WAVE_SINE256.h">
       <Filter>Waveforms</Filter>
     </ClInclude>
+    <ClInclude Include="include\STM32F0_DMA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\STM32F0_ADC.c">
@@ -92,6 +95,9 @@
       <Filter>Example Code</Filter>
     </ClCompile>
     <ClCompile Include="src\STM32F0_DAC.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\STM32F0_DMA.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
