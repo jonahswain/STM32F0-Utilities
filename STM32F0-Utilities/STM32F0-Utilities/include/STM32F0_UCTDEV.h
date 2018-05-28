@@ -5,7 +5,7 @@ A Collection of utilities for STM32F0 microcontrollers, primarily targeted at th
 
 Author: Jonah Swain (SWNJON003)
 Date created: 17/04/2018
-Date modified: 23/05/2018
+Date modified: 28/05/2018
 
 Module: UCTDEV
 Utilities specifically for the UCT development board
@@ -58,6 +58,11 @@ Includes macros and defines for things on the board
 #ifndef STM32F0_SPI_H
 #include "STM32F0_SPI.h"
 #define STM32F0_SPI_H
+#endif
+
+#ifndef STM32F0_DAC_H
+#include "STM32F0_DAC.h"
+#define STM32F0_DAC_H
 #endif
 
 #ifndef STM32F0_OTHER_H
