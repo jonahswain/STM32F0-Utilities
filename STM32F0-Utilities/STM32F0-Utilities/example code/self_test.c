@@ -29,6 +29,16 @@ Rename this file to 'main.c'
 #define STM32F0_UCTDEV_H
 #endif
 
+#ifndef WAVE_SINE256_H
+#include "WAVE_SINE256.h"
+#define WAVE_SINE256_H
+#endif
+
+#ifndef WAVE_TABLE_MOUNTAIN_H
+#include "WAVE_TABLE_MOUNTAIN.h"
+#define WAVE_TABLE_MOUNTAIN_H
+#endif
+
 /* CONSTANT DEFINITIONS */
 #define EEPROM_TESTDATA_OFFSET 0 // Address in EEPROM to store test data
 #define EEPROM_TESTCOMPL_OFFSET 8189 // Address in EEPROM to store all tests complete flag
@@ -54,6 +64,7 @@ void testPotentiometers();
 void testRGLED();
 void testTempSensor();
 void testEEPROM();
+void testDAC();
 
 void fullSelfTest() {
 	// The full complement of self tests
@@ -122,6 +133,9 @@ void menu() {
 		lcdWrite("EEPROM", " RUN  \x7F  \x7E      ");
 	}
 	else if (menuPosition == 7) {
+		lcdWrite("DAC", " RUN  \x7F  \x7E      ");
+	}
+	else if (menuPosition == 8) {
 		lcdWrite("Factory config", " SET  \x7F         ");
 	}
 }
@@ -170,6 +184,12 @@ void pinInterruptTriggered(IOPin_TypeDef* iopin) {
 				menuPosition = 6;
 			}
 			else if (menuPosition == 7) {
+				// Run EEPROM test
+				menuPosition = 255;
+				testDAC();
+				menuPosition = 7;
+			}
+			else if (menuPosition == 8) {
 				// Reset test completion byte in EEPROM to load default configuration on next reset
 				eepromWrite(EEPROM_TESTCOMPL_OFFSET, 0); // Write to EEPROM
 				lcdWrite("Reboot to load", "Factory config");
@@ -184,7 +204,7 @@ void pinInterruptTriggered(IOPin_TypeDef* iopin) {
 		}
 		else if (!digitalRead(SW2)) {
 			// SW2 (Right) pressed
-			if (menuPosition < 7) {
+			if (menuPosition < 8) {
 				menuPosition++; // Increment the menu position
 			}
 		}
@@ -452,6 +472,8 @@ void testTempSensor() {
 }
 
 void testEEPROM() {
+	// Test the EEPROM
+
 	lcdWrite("Testing", "EEPROM"); // Display message on LCD
 	startTimer(TIM6, 999); // Set timer for 1 second
 	while (!timerComplete(TIM6)); // Wait for timer to complete
@@ -465,6 +487,19 @@ void testEEPROM() {
 		lcdWrite("EEPROM fail :(", "reboot now"); // Display message on LCD
 	}
 	while (1); // Wait for reboot
+}
+
+void testDAC() {
+	// Test the DAC (and DMA)
+	lcdWrite("Testing DAC", "Scope PA4"); // Display message on LCD
+	startTimer(TIM6, 999); // Set timer for 1 second
+	while (!timerComplete(TIM6)); // Wait for timer to complete
+	dacDMAWaveGen(1, WAVE_SINE256, 1, WAVE_SINE256_LENGTH, 30); // Generate waveform
+	lcdWrite("Press any key", "to continue"); // Display message on LCD
+	while ((GPIOA->IDR & 0x000F) == 0x000F);
+	lcdWrite("DAC test", "complete"); // Display message on LCD
+	startTimer(TIM6, 999); // Set timer for 1 second
+	while (!timerComplete(TIM6)); // Wait for timer to complete
 }
 
 /* MAIN FUNCTION */
@@ -495,6 +530,7 @@ void main() {
 			for (uint16_t i = 0; i < 2; i++) {
 				eepromWrite(i + EEPROM_SIG_OFFSET, eepromSignature[i]); // A personal touch
 			}
+			dacDMAWaveGen(1, WAVE_TABLE_MOUNTAIN, 1, WAVE_TABLE_MOUNTAIN_LENGTH, 20); // Easter egg
 			lcdWrite("Testing Complete", "Reboot!"); // Display message on LCD
 		}
 		else {
