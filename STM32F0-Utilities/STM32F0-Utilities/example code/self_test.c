@@ -240,8 +240,8 @@ void TIM6_DAC_IRQHandler() {
 	pwmWrite(TIM2, 4, gLED); // Set LED PWM
 
 	counter++;
-	if (counter > 50) {
-		// Move LEDs every second
+	if (counter > 30) {
+		// Move LEDs
 		counter = 0;
 		
 		if (ledDirection == 0) {
@@ -272,8 +272,6 @@ void TIM6_DAC_IRQHandler() {
 void moveLEDs() {
 	static uint8_t rLedPattern = 0;
 	static signed int rLedDirection = 0;
-
-	clearStatusFlag(TIM16); // Clear the interrupt flag
 
 	// Move the LEDs every second for LED test
 	if (rLedDirection == 0) {
@@ -344,7 +342,7 @@ void testLEDs() {
 	startTimer(TIM6, 999); // Start a timer for 1s
 	while (!timerComplete(TIM6)); // Wait for timer to complete
 	lcdWrite("Press any key", "to continue"); // Display message on LCD
-	startRepeatingTimer(TIM6, 999); // Start a timer for 1s
+	startRepeatingTimer(TIM6, 499); // Start a timer for 0.5s
 	while ((GPIOA->IDR & 0x000F) == 0x000F) {
 		// Wait for button press
 		if (timerComplete(TIM6)) {
