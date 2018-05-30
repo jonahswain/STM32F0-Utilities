@@ -421,9 +421,37 @@ void testRGLED() {
 	startTimer(TIM6, 1999); // Set timer for 2 seconds
 	while (!timerComplete(TIM6)); // Wait for timer to complete
 	lcdWrite("Press any key", "when complete"); // Display message on LCD
+	startTimer(TIM6, 999); // Set timer for 1 second
+	while (!timerComplete(TIM6)); // Wait for timer to complete
+	uint8_t redVal = 0;
+	uint8_t greenVal = 0;
+	char redStr[4];
+	char greenStr[4];
+	lcdWrite("Red: ", "Green: "); // Display message on LCD
+	startRepeatingTimer(TIM6, 100); // Set TIM6 to update every 100ms
 	while ((GPIOA->IDR & 0x000F) == 0x000F) {
-		rgLedWrite(readPot(0), readPot(1)); // Change PWM based on pot inputs
+		if (timerComplete(TIM6)) {
+			clearStatusFlag(TIM6); // Reset the flag
+			// Get pot values and convert to strings
+			redVal = readPot(0);
+			greenVal = readPot(1);
+			sprintf(redStr, "%d", redVal);
+			sprintf(greenStr, "%d", greenVal);
+			
+			rgLedWrite(redVal, greenVal); // Update the LED
+
+			// Display values on LCD
+			lcdCursorPosition(1, 6);
+			lcdWriteString("   ");
+			lcdCursorPosition(1, 6);
+			lcdWriteString(redStr);
+			lcdCursorPosition(2, 8);
+			lcdWriteString("   ");
+			lcdCursorPosition(2, 8);
+			lcdWriteString(greenStr);
+		}
 	}
+	stopTimer(TIM6); // Stop TIM6
 }
 
 void testTempSensor() {
@@ -453,15 +481,22 @@ void testTempSensor() {
 		while (!timerComplete(TIM6)); // Wait for timer to complete
 	}
 	if (tsPass) {
+		uint8_t tempVal = 0;
 		char tempStr[4];
 		lcdWrite("Temp: ", "Press any key"); // Display message on LCD
+		startRepeatingTimer(TIM6, 100); // Start a repeating timer
 		while ((GPIOA->IDR & 0x000F) == 0x000F) { // Wait for button press and display current temperature on LCD
-			sprintf(tempStr, "%d", tempSensorRead());
-			lcdCursorPosition(1, 7);
-			lcdWriteString("   ");
-			lcdCursorPosition(1, 7);
-			lcdWriteString(tempStr);
+			if (timerComplete(TIM6)) {
+				tempVal = tempSensorRead(); // Read the temp sensor
+				ledWrite(tempVal);
+				sprintf(tempStr, "%d", tempVal);
+				lcdCursorPosition(1, 7);
+				lcdWriteString("   ");
+				lcdCursorPosition(1, 7);
+				lcdWriteString(tempStr);
+			}
 		}
+		stopTimer(TIM6); // Stop TIM6
 	}
 	else {
 		lcdWrite("Temp sensor", "fail :("); // Display message on LCD
