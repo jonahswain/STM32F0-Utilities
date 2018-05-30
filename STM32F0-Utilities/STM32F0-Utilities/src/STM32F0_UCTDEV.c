@@ -43,6 +43,7 @@ void init_peripherals() {
 
 	pinMode(POT0, GPIO_ANALOG); // Set Pot 0 to analog
 	pinMode(POT1, GPIO_ANALOG); // Set Pot 1 to analog
+	pinMode(PA4, GPIO_ANALOG); // Set PA4 (DAC out) to analog
 
 	configure_PWM(TIM2); // Enable PWM on TIM2
 	pinMode(RGLED_R, GPIO_ALTFN); // Set the pin mode of the red part of the RG LED to alternate function
