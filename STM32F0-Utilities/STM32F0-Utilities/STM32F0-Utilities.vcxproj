@@ -33,6 +33,7 @@
     <ClInclude Include="include\STM32F0_UCTDEV.h" />
     <ClInclude Include="include\STM32F0_UTIL.h" />
     <ClInclude Include="waveforms\WAVE_SINE256.h" />
+    <ClInclude Include="waveforms\WAVE_TABLE_MOUNTAIN.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="example code\self_test.c" />
