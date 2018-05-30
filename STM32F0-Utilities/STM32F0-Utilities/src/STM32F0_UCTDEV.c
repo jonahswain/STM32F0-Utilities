@@ -28,6 +28,7 @@ void init_peripherals() {
 	init_SYSCFG(); // Initialise SYSCFG module (needed for interrupts)
 	init_LCD(); // Initialise the LCD
 	init_EEPROM(); // Initialise the SPI EEPROM
+	init_DAC(1, 0, 0, 0);
 
 	GPIOB->MODER |= 0x00005555; // Set the red LED pin modes to output
 
