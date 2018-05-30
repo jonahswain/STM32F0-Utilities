@@ -251,7 +251,7 @@ period - the approximate delay between values (in microseconds)
 void dacDMAWaveGen(uint8_t channel, uint16_t* values, uint8_t mode, uint16_t length, uint16_t period) {
 	// Enables waveform generation using DMA (repeats forever...)
 	uint32_t peripheralAddress;
-	uint32_t memoryAddress = &values; // Address of waveform values in memory
+	uint32_t memoryAddress = (uint32_t)values; // Address of waveform values in memory
 
 	if (channel == 1) {
 		// Configure channel 1
