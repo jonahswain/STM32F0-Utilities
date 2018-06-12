@@ -31,6 +31,7 @@
     <ClInclude Include="include\STM32F0_SPI.h" />
     <ClInclude Include="include\STM32F0_TIM.h" />
     <ClInclude Include="include\STM32F0_UCTDEV.h" />
+    <ClInclude Include="include\STM32F0_USART.h" />
     <ClInclude Include="include\STM32F0_UTIL.h" />
     <ClInclude Include="waveforms\WAVE_SINE256.h" />
     <ClInclude Include="waveforms\WAVE_TABLE_MOUNTAIN.h" />
@@ -48,6 +49,7 @@
     <ClCompile Include="src\STM32F0_SPI.c" />
     <ClCompile Include="src\STM32F0_TIM.c" />
     <ClCompile Include="src\STM32F0_UCTDEV.c" />
+    <ClCompile Include="src\STM32F0_USART.c" />
     <ClCompile Include="src\__TEMPLATE.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
