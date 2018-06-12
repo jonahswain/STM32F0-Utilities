@@ -4,8 +4,8 @@ STM32F0 Utilities
 A Collection of utilities for STM32F0 microcontrollers, primarily targeted at the STM32F051C6-based UCT development board
 
 Author: Jonah Swain (SWNJON003)
-Date created: /2018
-Date modified: /2018
+Date created: 12/06/2018
+Date modified: 12/06/2018
 
 Module: USART
 Functions for communicating over USART
@@ -40,6 +40,9 @@ Functions for communicating over USART
 #endif
 
 /* CONSTANT DEFINITIONS */
+#define USART_CR1_M0 0x10000000
+#define USART_CR1_M1 0x00001000
+
 #define USART_OVERSAMPLING_16 0
 #define USART_OVERSAMPLING_8 1
 
