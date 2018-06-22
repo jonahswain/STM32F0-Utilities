@@ -88,6 +88,12 @@ Functions for communicating over USART
 #define USART_DRIVER_ENABLE 0x1
 #define USART_DRIVER_POLARITY 0x2
 
+// Address/character recognition
+#define USART_ADDREC_INTERRUPT_ENABLE 0x1
+#define USART_ADDRES_INTERRUPT_DISABLE 0x0
+#define USART_ADDREC_4BIT 0x0
+#define USART_ADDREC_7BIT 0x2
+
 /* FUNCTIONS */
 void init_USART(USART_TypeDef* USARTperiph, uint32_t BAUD, uint8_t oversampling, uint8_t frameSize, uint8_t frameFormat, uint8_t TXEN, uint8_t RXEN, uint8_t stopBits, uint8_t parityConfiguration, uint8_t inversionConfiguration, uint8_t swapTXRX, uint8_t halfDuplexMode, uint8_t clockConfiguration, uint8_t driverConfiguration, uint8_t driverEAT, uint8_t driverEDT);
 /*
@@ -127,7 +133,7 @@ swapTXRX - Swap TX and RX pins
 */
 
 void usartSetBAUD(USART_TypeDef* USARTperiph, uint32_t BAUD); // Sets the BAUD rate of a USART peripheral module (based on a 48MHz system clock)
-void usartAutoBAUDDetection(USART_TypeDef* USARTperiph); // Automatically detects the BAUD rate on a USART peripheral module (Note char to send)
+void usartAutoBAUDDetection(USART_TypeDef* USARTperiph); // Automatically detects the BAUD rate on a USART peripheral module (See reference manual for modes, if in doubt, use mode 0)
 void usartConfigureAddressRecognition(USART_TypeDef* USARTperiph, uint8_t address, uint8_t addressRecognitionConfig); // Configures address/character recognition on a USART peripheral module
 void usartSetAddress(USART_TypeDef* USARTperiph, uint8_t address); // Sets the address of a USART peripheral module
 uint8_t usartRXNE(USART_TypeDef* USARTperiph); // Returns whether the USART peripheral module has data in its RX buffer

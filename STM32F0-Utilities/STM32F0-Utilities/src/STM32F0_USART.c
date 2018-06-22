@@ -329,34 +329,61 @@ void usartSetBAUD(USART_TypeDef* USARTperiph, uint32_t BAUD) {
 	}
 }
 
-void usartAutoBAUDDetection(USART_TypeDef* USARTperiph) {
-	// Automatically detects the BAUD rate on a USART peripheral module (Note char to send)
-
-
+void usartAutoBAUDDetection(USART_TypeDef* USARTperiph, uint8_t mode) {
+	// Automatically detects the BAUD rate on a USART peripheral module
+	mode &= 0x03; // Drop mode MSBs
+	USARTperiph->BRR = 0xFFFF; // Set BAUD rate register to 0xFFFF
+	USARTperiph->CR2 &= ~USART_CR2_ABRMODE; // Reset mode bits
+	USARTperiph->CR2 |= (mode << 21); // Set mode bits
+	USARTperiph->CR2 |= USART_CR2_ABREN; // Enable automatic BAUD rate detection
+	while (USARTperiph->ISR & (USART_ISR_ABRF | USART_ISR_ABRE)); // Wait until BAUD rate is set or an error ocurrs
+	USARTperiph->CR2 &= ~USART_CR2_ABREN; // Disable automatic BAUD rate detection
 }
 
 void usartConfigureAddressRecognition(USART_TypeDef* USARTperiph, uint8_t address, uint8_t addressRecognitionConfig) {
 	// Configures address/character recognition on a USART peripheral module
+	USARTperiph->CR2 &= ~USART_CR2_ADD; // Reset address bits
+	USARTperiph->CR2 |= (address << 24); // Set address bits
+	if (addressRecognitionConfig & USART_ADDREC_INTERRUPT_ENABLE) { // Enable/disable interrupt
+		USARTperiph->CR1 |= USART_CR1_CMIE;
+	}
+	else {
+		USARTperiph->CR1 &= USART_CR1_CMIE;
+	}
+	if (addressRecognitionConfig & USART_ADDREC_7BIT) { // 4/7 bit mode
+		USARTperiph->CR2 |= USART_CR2_ADDM7;
+	}
+	else {
+		USARTperiph->CR2 &= ~USART_CR2_ADDM7;
+	}
 }
 
 void usartSetAddress(USART_TypeDef* USARTperiph, uint8_t address) {
 	// Sets the address of a USART peripheral module
+	USARTperiph->CR2 &= ~USART_CR2_ADD; // Reset address bits
+	USARTperiph->CR2 |= (address << 24); // Set address bits
 }
 
 uint8_t usartRXNE(USART_TypeDef* USARTperiph) {
 	// Returns whether the USART peripheral module has data in its RX buffer
+	return !!(USARTperiph->ISR & USART_ISR_RXNE);
 }
 
 uint8_t usartGetData(USART_TypeDef* USARTperiph) {
 	// Returns any data received over USART
+	return (uint8_t)USARTperiph->RDR;
 }
 
 uint8_t usartReceiveData(USART_TypeDef* USARTperiph) {
 	// Waits for data from USART before returning it
+	while (USARTperiph->ISR & USART_ISR_RXNE); // Wait for data
+	return (uint8_t)USARTperiph->RDR; // Return data
 }
 
 void usartTransmitData(USART_TypeDef* USARTperiph, uint8_t data) {
 	// Sends a data frame over USART
+	while (!(USARTperiph->ISR & USART_ISR_TXE)); // Wait for TX empty
+	*((uint8_t*)USARTperiph->TDR) = data; // Place the data into the TX data register
 }
 
 void usartDMATransmitData(USART_TypeDef* USARTperiph, uint8_t* data, uint16_t dataSize) {
