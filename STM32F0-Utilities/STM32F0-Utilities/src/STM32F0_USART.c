@@ -73,7 +73,7 @@ void init_USART(USART_TypeDef* USARTperiph, uint32_t BAUD, uint8_t oversampling,
 		USARTperiph->CR2 |= USART_CR2_MSBFIRST;
 	}
 	else {
-		USARTperiph->CR2 &= USART_CR2_MSBFIRST;
+		USARTperiph->CR2 &= ~USART_CR2_MSBFIRST;
 	}
 
 	// Configure stop bits
@@ -248,7 +248,7 @@ void init_USART_serial(USART_TypeDef* USARTperiph, uint32_t BAUD, uint8_t oversa
 		USARTperiph->CR2 |= USART_CR2_MSBFIRST;
 	}
 	else {
-		USARTperiph->CR2 &= USART_CR2_MSBFIRST;
+		USARTperiph->CR2 &= ~USART_CR2_MSBFIRST;
 	}
 
 	// Configure stop bits
@@ -311,6 +311,72 @@ void init_USART_serial(USART_TypeDef* USARTperiph, uint32_t BAUD, uint8_t oversa
 	USARTperiph->CR1 |= USART_CR1_UE; // Enable USART
 
 	// Enable TX/RX
+	USARTperiph->CR1 |= USART_CR1_TE;
+	USARTperiph->CR1 |= USART_CR1_RE;
+}
+
+void init_USART_stdserial(USART_TypeDef* USARTperiph, uint32_t BAUD) {
+	// Initialises a USART peripheral module for serial communication with a specified BAUD rate (based on a 48MHz clock)
+
+	// Enable clock for USART peripheral module
+	if (USARTperiph == USART1) {
+		RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+	}
+	else if (USARTperiph == USART2) {
+		RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+	}
+	else if (USARTperiph == USART3) {
+		RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
+	}
+	else if (USARTperiph == USART4) {
+		RCC->APB1ENR |= RCC_APB1ENR_USART4EN;
+	}
+	else {
+		return; // Invalid USART peripheral, do not continue with configuration
+	}
+
+	USARTperiph->CR1 &= ~USART_CR1_UE; // Disable USART for configuration
+	
+	// Configure BAUD rate and oversampling
+	uint16_t usartDiv = 48000000 / BAUD; // USARTDIV (for BAUD rate)
+	USARTperiph->CR1 &= ~USART_CR1_OVER8;
+	USARTperiph->BRR = usartDiv;
+
+	// Configure frame size
+	USARTperiph->CR1 &= ~(USART_CR1_M0 | USART_CR1_M1);
+
+	// Configure frame format
+	USARTperiph->CR2 &= ~USART_CR2_MSBFIRST;
+
+	// Configure stop bits
+	USARTperiph->CR2 &= ~USART_CR2_STOP;
+
+	// Configure parity
+	USARTperiph->CR1 &= ~USART_CR1_PCE;
+
+	// Configure inversion
+	USARTperiph->CR2 &= ~USART_CR2_DATAINV;
+	USARTperiph->CR2 &= ~USART_CR2_TXINV;
+	USARTperiph->CR2 &= ~USART_CR2_RXINV;
+
+	// Configure swap TX/RX pins
+	USARTperiph->CR2 &= ~USART_CR2_SWAP;
+
+	// Configure half duplex
+	USARTperiph->CR3 &= ~USART_CR3_HDSEL;
+
+	// Configure clock (synchronous mode)
+	USARTperiph->CR2 &= ~USART_CR2_CLKEN;
+
+	// Configure external driver enable signal
+	USARTperiph->CR3 &= ~USART_CR3_DEM;
+
+	// Driver enable assertion/deassertion time
+	USARTperiph->CR1 &= 0xFC00FFFF; // Clear assertion/deassertion bits
+
+	USARTperiph->CR1 |= USART_CR1_UE; // Enable USART
+
+	// Configure TXEN
 	USARTperiph->CR1 |= USART_CR1_TE;
 	USARTperiph->CR1 |= USART_CR1_RE;
 }

@@ -132,6 +132,8 @@ inversionConfiguration - Bit 0: Invert data, Bit 1: Invert TX pin, Bit 2: Invert
 swapTXRX - Swap TX and RX pins
 */
 
+void init_USART_stdserial(USART_TypeDef* USARTperiph, uint32_t BAUD); // Initialises a USART peripheral module for serial communication with a specified BAUD rate (based on a 48MHz clock)
+
 void usartSetBAUD(USART_TypeDef* USARTperiph, uint32_t BAUD); // Sets the BAUD rate of a USART peripheral module (based on a 48MHz system clock)
 void usartAutoBAUDDetection(USART_TypeDef* USARTperiph); // Automatically detects the BAUD rate on a USART peripheral module (See reference manual for modes, if in doubt, use mode 0)
 void usartConfigureAddressRecognition(USART_TypeDef* USARTperiph, uint8_t address, uint8_t addressRecognitionConfig); // Configures address/character recognition on a USART peripheral module
