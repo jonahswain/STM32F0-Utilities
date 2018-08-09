@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="example code\card_tags.h" />
     <ClInclude Include="include\stm32f0xx.h" />
     <ClInclude Include="include\STM32F0_ADC.h" />
     <ClInclude Include="include\STM32F0_DAC.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="waveforms\WAVE_TABLE_MOUNTAIN.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="example code\RFID_spoofer.c" />
     <ClCompile Include="example code\self_test.c" />
     <ClCompile Include="src\STM32F0_ADC.c" />
     <ClCompile Include="src\STM32F0_DAC.c" />

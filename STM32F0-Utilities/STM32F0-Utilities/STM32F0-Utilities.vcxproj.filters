@@ -62,6 +62,9 @@
     <ClInclude Include="waveforms\WAVE_TABLE_MOUNTAIN.h">
       <Filter>Waveforms</Filter>
     </ClInclude>
+    <ClInclude Include="example code\card_tags.h">
+      <Filter>Example Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\STM32F0_ADC.c">
@@ -102,6 +105,9 @@
     </ClCompile>
     <ClCompile Include="src\STM32F0_DMA.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="example code\RFID_spoofer.c">
+      <Filter>Example Code</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
