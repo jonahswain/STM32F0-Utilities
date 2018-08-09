@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Personal/private files
+card_tags.h
+
 # User-specific files
 *.suo
 *.user
