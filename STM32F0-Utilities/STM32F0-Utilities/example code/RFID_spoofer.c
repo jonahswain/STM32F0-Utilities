@@ -12,6 +12,13 @@ Rename this file to 'main.c'
 
 */
 
+/*
+### DISCLAIMER ###
+This code is for educational purposes only!
+I take no responsibility or liability for any trouble that may arise as a result of you using this code, or portions thereof.
+This disclaimer does not constitute a license or permission to use this code, or portions thereof.
+*/
+
 /* INCLUDES */
 
 #ifndef STM32F0XX_H
